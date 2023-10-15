@@ -7,3 +7,4 @@ psutil==5.9.0
 scikit-learn==1.1.1
 typing-extensions==4.3.0
 xgboost==1.7.4
+pandas<2.0.0
