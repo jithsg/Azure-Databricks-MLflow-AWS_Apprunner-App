@@ -1,4 +1,3 @@
-from mlflow.store.artifact.models_artifact_repo import ModelsArtifactRepository
 from mlflow.tracking import MlflowClient
 
 client = MlflowClient()

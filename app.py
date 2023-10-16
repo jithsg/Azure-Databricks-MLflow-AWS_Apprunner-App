@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from typing import List, Any
 import mlflow.pyfunc
@@ -7,18 +7,23 @@ import traceback
 
 app = FastAPI()
 
+
 # Define the request body as a Pydantic model
 class PredictRequest(BaseModel):
     columns: List[str] = Field(..., example=["firstName", "middleName", "lastName"])
-    data: List[List[Any]] = Field(..., example=[["John", "M", "Doe"], ["Jane", "A", "Doe"]])
+    data: List[List[Any]] = Field(
+        ..., example=[["John", "M", "Doe"], ["Jane", "A", "Doe"]]
+    )
+
 
 # Load your model
 model_path = "/workspaces/mlflow-/model/"
 try:
     model = mlflow.pyfunc.load_model(model_path)
-except Exception as e:
-    print(f"Error loading model: {e}")
+except Exception as load_error:
+    print(f"Error loading model: {load_error}")
     print(traceback.format_exc())  # Print the traceback if there's an error
+
 
 @app.post("/predict/")
 async def predict(request: PredictRequest):
@@ -31,11 +36,13 @@ async def predict(request: PredictRequest):
 
         # Return the result as a list
         return result.tolist()
-    except Exception as e:
+    except Exception as predict_error:
         # If an exception occurs, return an error message and the traceback
-        return {"error": str(e), "trace": traceback.format_exc()}
+        return {"error": str(predict_error), "trace": traceback.format_exc()}
+
 
 # Optional: if you want to run the server using python script
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

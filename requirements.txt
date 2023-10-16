@@ -6,3 +6,5 @@ requests
 flask
 fastapi
 uvicorn
+pylint
+black
