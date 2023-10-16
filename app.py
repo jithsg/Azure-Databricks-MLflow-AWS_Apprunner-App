@@ -17,12 +17,13 @@ class PredictRequest(BaseModel):
 
 
 # Load your model
-model_path = "/workspaces/mlflow-/model/"
+model_path = "./"
 try:
     model = mlflow.pyfunc.load_model(model_path)
 except Exception as load_error:
     print(f"Error loading model: {load_error}")
     print(traceback.format_exc())  # Print the traceback if there's an error
+    raise load_error
 
 
 @app.post("/predict/")
